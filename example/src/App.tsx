@@ -1,160 +1,313 @@
-import { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Button, Platform } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  Platform,
+  Pressable,
+} from 'react-native';
+
 import {
   getInstallReferrer,
   registerAppForAdNetworkAttribution,
   updateConversionValue,
+  updatePostbackConversionValue,
+  isReferrerSuccess,
+  isSKANSuccess,
+  parseReferrerParams,
   type ReferrerResult,
   type SKANConversionResult,
+  type InstallReferrerDetails,
 } from 'react-native-nitro-skan-referrer';
 
 export default function App() {
-  const [platform, setPlatform] = useState<string>('');
-  const [referrerResult, setReferrerResult] = useState<ReferrerResult | null>(
-    null
-  );
-  const [skanResult, setSkanResult] = useState<SKANConversionResult | null>(
-    null
-  );
-  const [loading, setLoading] = useState(false);
+  const [referrerData, setReferrerData] =
+    useState<InstallReferrerDetails | null>(null);
+  const [referrerError, setReferrerError] = useState<string | null>(null);
+  const [skanStatus, setSkanStatus] = useState('Not initialized');
+
+  const isAndroid = Platform.OS === 'android';
+  const isiOS = Platform.OS === 'ios';
 
   useEffect(() => {
-    setPlatform(Platform.OS);
+    if (isAndroid) fetchAndroidReferrer();
+    if (isiOS) initializeSKAN();
   }, []);
 
-  const handleGetReferrer = async () => {
-    setLoading(true);
+  const fetchAndroidReferrer = async () => {
     try {
-      const result = await getInstallReferrer();
-      setReferrerResult(result);
-    } catch (error) {
-      console.error('Error getting referrer:', error);
-    } finally {
-      setLoading(false);
+      const result: ReferrerResult = await getInstallReferrer();
+
+      if (isReferrerSuccess(result)) {
+        setReferrerError(null);
+        setReferrerData(result.data);
+
+        const params = parseReferrerParams(result.data.installReferrer);
+
+        await sendToBackend({
+          platform: 'android',
+          installReferrer: result.data.installReferrer,
+          clickTime: result.data.referrerClickTimestampSeconds,
+          installTime: result.data.installBeginTimestampSeconds,
+          utmParams: params,
+        });
+      } else {
+        setReferrerData(null);
+        setReferrerError(`${result.error}: ${result.errorMessage || ''}`);
+      }
+    } catch (err) {
+      setReferrerError(String(err));
     }
   };
 
-  const handleRegisterSKAN = async () => {
-    setLoading(true);
+  const initializeSKAN = async () => {
     try {
       const result = await registerAppForAdNetworkAttribution();
-      setSkanResult(result);
-    } catch (error) {
-      console.error('Error registering SKAN:', error);
-    } finally {
-      setLoading(false);
+      setSkanStatus(
+        isSKANSuccess(result)
+          ? 'Registered successfully'
+          : `Registration failed: ${result.error}`
+      );
+    } catch (err) {
+      setSkanStatus(String(err));
     }
   };
 
-  const handleUpdateConversion = async () => {
-    setLoading(true);
+  const trackConversionEvent = async (label: string, value: number) => {
     try {
-      const result = await updateConversionValue(10);
-      setSkanResult(result);
-    } catch (error) {
-      console.error('Error updating conversion:', error);
-    } finally {
-      setLoading(false);
+      const result = await updateConversionValue(value);
+      setSkanStatus(
+        isSKANSuccess(result)
+          ? `Tracked: ${label} (${value})`
+          : `Error: ${result.error}`
+      );
+    } catch (err) {
+      setSkanStatus(`Error: ${String(err)}`);
     }
+  };
+
+  const trackPostbackEvent = async (
+    label: string,
+    value: number,
+    coarse: 'low' | 'medium' | 'high'
+  ) => {
+    try {
+      const result = await updatePostbackConversionValue(value, coarse, false);
+      setSkanStatus(
+        isSKANSuccess(result)
+          ? `Postback: ${label} (${value}, ${coarse})`
+          : `Error: ${result.error}`
+      );
+    } catch (err) {
+      setSkanStatus(`Error: ${String(err)}`);
+    }
+  };
+
+  const sendToBackend = async (payload: any) => {
+    try {
+      await fetch('https://your-api.com/attribution', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+    } catch {}
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Nitro SKAN Referrer</Text>
-      <Text style={styles.platform}>Platform: {platform}</Text>
+    <ScrollView style={styles.container}>
+      <Text style={styles.header}>
+        {isAndroid ? 'Android Install Referrer' : 'iOS SKAdNetwork'}
+      </Text>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Android - Install Referrer</Text>
-        <Button
-          title="Get Install Referrer"
-          onPress={handleGetReferrer}
-          disabled={loading || Platform.OS !== 'android'}
-        />
-        {referrerResult && (
-          <View style={styles.result}>
-            <Text>Success: {referrerResult.success ? 'Yes' : 'No'}</Text>
-            {referrerResult.success && referrerResult.data && (
-              <>
-                <Text numberOfLines={2}>
-                  Referrer: {referrerResult.data.installReferrer || 'N/A'}
-                </Text>
-                <Text>
-                  Click Time:{' '}
-                  {referrerResult.data.referrerClickTimestampSeconds}
-                </Text>
-                <Text>
-                  Install Time:{' '}
-                  {referrerResult.data.installBeginTimestampSeconds}
-                </Text>
-              </>
-            )}
-            {!referrerResult.success && (
-              <Text>Error: {referrerResult.errorMessage}</Text>
-            )}
-          </View>
-        )}
-      </View>
+      {isAndroid && (
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Install Referrer Details</Text>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>iOS - SKAdNetwork</Text>
-        <Button
-          title="Register for Attribution"
-          onPress={handleRegisterSKAN}
-          disabled={loading || Platform.OS !== 'ios'}
-        />
-        <View style={styles.spacer} />
-        <Button
-          title="Update Conversion (value: 10)"
-          onPress={handleUpdateConversion}
-          disabled={loading || Platform.OS !== 'ios'}
-        />
-        {skanResult && (
-          <View style={styles.result}>
-            <Text>Success: {skanResult.success ? 'Yes' : 'No'}</Text>
-            {skanResult.error && <Text>Error: {skanResult.error}</Text>}
+          {!referrerData && (
+            <Text style={styles.errorText}>{referrerError || 'Loading…'}</Text>
+          )}
+
+          {referrerData && (
+            <View>
+              <InfoRow label="Install Referrer" value={referrerData.installReferrer} />
+              <InfoRow
+                label="Click Time"
+                value={new Date(
+                  referrerData.referrerClickTimestampSeconds * 1000
+                ).toLocaleString()}
+              />
+              <InfoRow
+                label="Install Time"
+                value={new Date(
+                  referrerData.installBeginTimestampSeconds * 1000
+                ).toLocaleString()}
+              />
+              <InfoRow label="Install Version" value={referrerData.installVersion} />
+              <InfoRow
+                label="Google Play Instant"
+                value={String(referrerData.googlePlayInstantParam)}
+              />
+
+              <View style={styles.subSection}>
+                <Text style={styles.subTitle}>UTM Parameters</Text>
+                {Object.entries(
+                  parseReferrerParams(referrerData.installReferrer)
+                ).map(([key, val]) => (
+                  <Text key={key} style={styles.valueText}>
+                    {key}: {val}
+                  </Text>
+                ))}
+              </View>
+            </View>
+          )}
+
+          <PrimaryButton label="Retry" onPress={fetchAndroidReferrer} />
+        </View>
+      )}
+
+      {isiOS && (
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>SKAdNetwork Status</Text>
+          <Text style={styles.valueText}>{skanStatus}</Text>
+
+          <View style={styles.buttonGroup}>
+            <PrimaryButton
+              label="App Open (1)"
+              onPress={() => trackConversionEvent('App Open', 1)}
+            />
+            <PrimaryButton
+              label="Onboarding (5)"
+              onPress={() => trackConversionEvent('Onboarding', 5)}
+            />
+            <PrimaryButton
+              label="Purchase (20)"
+              onPress={() => trackConversionEvent('Purchase', 20)}
+            />
+            <PrimaryButton
+              label="High Value (40)"
+              onPress={() => trackConversionEvent('High Value', 40)}
+            />
+            <PrimaryButton
+              label="Subscription (63)"
+              onPress={() => trackConversionEvent('Subscription', 63)}
+            />
           </View>
-        )}
-      </View>
+
+          <Text style={[styles.cardTitle, { marginTop: 20 }]}>
+            Postback Events (iOS 16.1+)
+          </Text>
+
+          <View style={styles.buttonGroup}>
+            <PrimaryButton
+              label="Postback Low (10)"
+              onPress={() => trackPostbackEvent('Low', 10, 'low')}
+            />
+            <PrimaryButton
+              label="Postback Medium (30)"
+              onPress={() => trackPostbackEvent('Medium', 30, 'medium')}
+            />
+            <PrimaryButton
+              label="Postback High (50)"
+              onPress={() => trackPostbackEvent('High', 50, 'high')}
+            />
+          </View>
+        </View>
+      )}
+    </ScrollView>
+  );
+}
+
+function InfoRow({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={styles.infoRow}>
+      <Text style={styles.labelText}>{label}</Text>
+      <Text style={styles.valueText}>{value}</Text>
     </View>
+  );
+}
+
+function PrimaryButton({
+  label,
+  onPress,
+}: {
+  label: string;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable style={styles.button} onPress={onPress}>
+      <Text style={styles.buttonText}>{label}</Text>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
+    paddingHorizontal: 20,
+    backgroundColor: '#f7f7f7',
+    paddingTop: 100,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 8,
+  header: {
+    fontSize: 26,
+    fontWeight: '700',
+    marginVertical: 20,
+    textAlign: 'center',
   },
-  platform: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 24,
+  card: {
+    backgroundColor: 'white',
+    padding: 18,
+    borderRadius: 12,
+    marginBottom: 25,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
   },
-  section: {
-    width: '100%',
-    marginBottom: 24,
-    padding: 16,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 8,
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: 15,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+  infoRow: {
     marginBottom: 12,
   },
-  result: {
-    marginTop: 12,
-    padding: 12,
-    backgroundColor: '#fff',
-    borderRadius: 4,
+  labelText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#444',
   },
-  spacer: {
-    height: 8,
+  valueText: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 4,
+  },
+  subSection: {
+    marginTop: 14,
+  },
+  subTitle: {
+    fontWeight: '600',
+    fontSize: 15,
+    marginBottom: 5,
+  },
+  button: {
+    marginTop: 12,
+    backgroundColor: '#007AFF',
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  buttonText: {
+    textAlign: 'center',
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  buttonGroup: {
+    gap: 12,
+    marginTop: 12,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
   },
 });

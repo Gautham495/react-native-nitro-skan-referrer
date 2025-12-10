@@ -10,7 +10,6 @@
 #include <fbjni/fbjni.h>
 #include "InstallReferrerDetails.hpp"
 
-#include <optional>
 #include <string>
 
 namespace margelo::nitro::nitroskanreferrer {
@@ -53,7 +52,7 @@ namespace margelo::nitro::nitroskanreferrer {
         referrerClickTimestampServerSeconds,
         installBeginTimestampServerSeconds,
         static_cast<bool>(googlePlayInstantParam),
-        installVersion != nullptr ? std::make_optional(installVersion->toStdString()) : std::nullopt
+        installVersion->toStdString()
       );
     }
 
@@ -74,7 +73,7 @@ namespace margelo::nitro::nitroskanreferrer {
         value.referrerClickTimestampServerSeconds,
         value.installBeginTimestampServerSeconds,
         value.googlePlayInstantParam,
-        value.installVersion.has_value() ? jni::make_jstring(value.installVersion.value()) : nullptr
+        jni::make_jstring(value.installVersion)
       );
     }
   };

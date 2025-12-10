@@ -17,7 +17,7 @@ public protocol HybridNitroSkanReferrerSpec_protocol: HybridObject {
   func getInstallReferrer() throws -> Promise<ReferrerResult>
   func registerAppForAdNetworkAttribution() throws -> Promise<SKANConversionResult>
   func updateConversionValue(fineValue: Double) throws -> Promise<SKANConversionResult>
-  func updatePostbackConversionValue(fineValue: Double, coarseValue: CoarseValue, lockWindow: Bool) throws -> Promise<SKANConversionResult>
+  func updatePostbackConversionValue(fineValue: Double, coarseValue: String, lockWindow: Bool) throws -> Promise<SKANConversionResult>
 }
 
 public extension HybridNitroSkanReferrerSpec_protocol {

@@ -26,7 +26,6 @@
 
 
 #include <string>
-#include <optional>
 
 namespace margelo::nitro::nitroskanreferrer {
 
@@ -41,11 +40,11 @@ namespace margelo::nitro::nitroskanreferrer {
     double referrerClickTimestampServerSeconds     SWIFT_PRIVATE;
     double installBeginTimestampServerSeconds     SWIFT_PRIVATE;
     bool googlePlayInstantParam     SWIFT_PRIVATE;
-    std::optional<std::string> installVersion     SWIFT_PRIVATE;
+    std::string installVersion     SWIFT_PRIVATE;
 
   public:
     InstallReferrerDetails() = default;
-    explicit InstallReferrerDetails(std::string installReferrer, double referrerClickTimestampSeconds, double installBeginTimestampSeconds, double referrerClickTimestampServerSeconds, double installBeginTimestampServerSeconds, bool googlePlayInstantParam, std::optional<std::string> installVersion): installReferrer(installReferrer), referrerClickTimestampSeconds(referrerClickTimestampSeconds), installBeginTimestampSeconds(installBeginTimestampSeconds), referrerClickTimestampServerSeconds(referrerClickTimestampServerSeconds), installBeginTimestampServerSeconds(installBeginTimestampServerSeconds), googlePlayInstantParam(googlePlayInstantParam), installVersion(installVersion) {}
+    explicit InstallReferrerDetails(std::string installReferrer, double referrerClickTimestampSeconds, double installBeginTimestampSeconds, double referrerClickTimestampServerSeconds, double installBeginTimestampServerSeconds, bool googlePlayInstantParam, std::string installVersion): installReferrer(installReferrer), referrerClickTimestampSeconds(referrerClickTimestampSeconds), installBeginTimestampSeconds(installBeginTimestampSeconds), referrerClickTimestampServerSeconds(referrerClickTimestampServerSeconds), installBeginTimestampServerSeconds(installBeginTimestampServerSeconds), googlePlayInstantParam(googlePlayInstantParam), installVersion(installVersion) {}
   };
 
 } // namespace margelo::nitro::nitroskanreferrer
@@ -64,7 +63,7 @@ namespace margelo::nitro {
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, "referrerClickTimestampServerSeconds")),
         JSIConverter<double>::fromJSI(runtime, obj.getProperty(runtime, "installBeginTimestampServerSeconds")),
         JSIConverter<bool>::fromJSI(runtime, obj.getProperty(runtime, "googlePlayInstantParam")),
-        JSIConverter<std::optional<std::string>>::fromJSI(runtime, obj.getProperty(runtime, "installVersion"))
+        JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, "installVersion"))
       );
     }
     static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::nitroskanreferrer::InstallReferrerDetails& arg) {
@@ -75,7 +74,7 @@ namespace margelo::nitro {
       obj.setProperty(runtime, "referrerClickTimestampServerSeconds", JSIConverter<double>::toJSI(runtime, arg.referrerClickTimestampServerSeconds));
       obj.setProperty(runtime, "installBeginTimestampServerSeconds", JSIConverter<double>::toJSI(runtime, arg.installBeginTimestampServerSeconds));
       obj.setProperty(runtime, "googlePlayInstantParam", JSIConverter<bool>::toJSI(runtime, arg.googlePlayInstantParam));
-      obj.setProperty(runtime, "installVersion", JSIConverter<std::optional<std::string>>::toJSI(runtime, arg.installVersion));
+      obj.setProperty(runtime, "installVersion", JSIConverter<std::string>::toJSI(runtime, arg.installVersion));
       return obj;
     }
     static inline bool canConvert(jsi::Runtime& runtime, const jsi::Value& value) {
@@ -92,7 +91,7 @@ namespace margelo::nitro {
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, "referrerClickTimestampServerSeconds"))) return false;
       if (!JSIConverter<double>::canConvert(runtime, obj.getProperty(runtime, "installBeginTimestampServerSeconds"))) return false;
       if (!JSIConverter<bool>::canConvert(runtime, obj.getProperty(runtime, "googlePlayInstantParam"))) return false;
-      if (!JSIConverter<std::optional<std::string>>::canConvert(runtime, obj.getProperty(runtime, "installVersion"))) return false;
+      if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, "installVersion"))) return false;
       return true;
     }
   };

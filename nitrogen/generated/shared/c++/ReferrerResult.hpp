@@ -27,7 +27,6 @@
 namespace margelo::nitro::nitroskanreferrer { struct InstallReferrerDetails; }
 
 #include "InstallReferrerDetails.hpp"
-#include <optional>
 #include <string>
 
 namespace margelo::nitro::nitroskanreferrer {
@@ -38,13 +37,13 @@ namespace margelo::nitro::nitroskanreferrer {
   struct ReferrerResult {
   public:
     bool success     SWIFT_PRIVATE;
-    std::optional<InstallReferrerDetails> data     SWIFT_PRIVATE;
+    InstallReferrerDetails data     SWIFT_PRIVATE;
     std::string error     SWIFT_PRIVATE;
-    std::optional<std::string> errorMessage     SWIFT_PRIVATE;
+    std::string errorMessage     SWIFT_PRIVATE;
 
   public:
     ReferrerResult() = default;
-    explicit ReferrerResult(bool success, std::optional<InstallReferrerDetails> data, std::string error, std::optional<std::string> errorMessage): success(success), data(data), error(error), errorMessage(errorMessage) {}
+    explicit ReferrerResult(bool success, InstallReferrerDetails data, std::string error, std::string errorMessage): success(success), data(data), error(error), errorMessage(errorMessage) {}
   };
 
 } // namespace margelo::nitro::nitroskanreferrer
@@ -58,17 +57,17 @@ namespace margelo::nitro {
       jsi::Object obj = arg.asObject(runtime);
       return margelo::nitro::nitroskanreferrer::ReferrerResult(
         JSIConverter<bool>::fromJSI(runtime, obj.getProperty(runtime, "success")),
-        JSIConverter<std::optional<margelo::nitro::nitroskanreferrer::InstallReferrerDetails>>::fromJSI(runtime, obj.getProperty(runtime, "data")),
+        JSIConverter<margelo::nitro::nitroskanreferrer::InstallReferrerDetails>::fromJSI(runtime, obj.getProperty(runtime, "data")),
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, "error")),
-        JSIConverter<std::optional<std::string>>::fromJSI(runtime, obj.getProperty(runtime, "errorMessage"))
+        JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, "errorMessage"))
       );
     }
     static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::nitroskanreferrer::ReferrerResult& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, "success", JSIConverter<bool>::toJSI(runtime, arg.success));
-      obj.setProperty(runtime, "data", JSIConverter<std::optional<margelo::nitro::nitroskanreferrer::InstallReferrerDetails>>::toJSI(runtime, arg.data));
+      obj.setProperty(runtime, "data", JSIConverter<margelo::nitro::nitroskanreferrer::InstallReferrerDetails>::toJSI(runtime, arg.data));
       obj.setProperty(runtime, "error", JSIConverter<std::string>::toJSI(runtime, arg.error));
-      obj.setProperty(runtime, "errorMessage", JSIConverter<std::optional<std::string>>::toJSI(runtime, arg.errorMessage));
+      obj.setProperty(runtime, "errorMessage", JSIConverter<std::string>::toJSI(runtime, arg.errorMessage));
       return obj;
     }
     static inline bool canConvert(jsi::Runtime& runtime, const jsi::Value& value) {
@@ -80,9 +79,9 @@ namespace margelo::nitro {
         return false;
       }
       if (!JSIConverter<bool>::canConvert(runtime, obj.getProperty(runtime, "success"))) return false;
-      if (!JSIConverter<std::optional<margelo::nitro::nitroskanreferrer::InstallReferrerDetails>>::canConvert(runtime, obj.getProperty(runtime, "data"))) return false;
+      if (!JSIConverter<margelo::nitro::nitroskanreferrer::InstallReferrerDetails>::canConvert(runtime, obj.getProperty(runtime, "data"))) return false;
       if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, "error"))) return false;
-      if (!JSIConverter<std::optional<std::string>>::canConvert(runtime, obj.getProperty(runtime, "errorMessage"))) return false;
+      if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, "errorMessage"))) return false;
       return true;
     }
   };

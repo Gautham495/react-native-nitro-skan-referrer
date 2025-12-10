@@ -57,7 +57,7 @@ namespace margelo::nitro::nitroskanreferrer {
     std::shared_ptr<Promise<ReferrerResult>> getInstallReferrer() override;
     std::shared_ptr<Promise<SKANConversionResult>> registerAppForAdNetworkAttribution() override;
     std::shared_ptr<Promise<SKANConversionResult>> updateConversionValue(double fineValue) override;
-    std::shared_ptr<Promise<SKANConversionResult>> updatePostbackConversionValue(double fineValue, CoarseValue coarseValue, bool lockWindow) override;
+    std::shared_ptr<Promise<SKANConversionResult>> updatePostbackConversionValue(double fineValue, const std::string& coarseValue, bool lockWindow) override;
 
   private:
     friend HybridBase;

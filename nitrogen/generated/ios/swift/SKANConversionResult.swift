@@ -19,14 +19,8 @@ public extension SKANConversionResult {
   /**
    * Create a new instance of `SKANConversionResult`.
    */
-  init(success: Bool, error: String?) {
-    self.init(success, { () -> bridge.std__optional_std__string_ in
-      if let __unwrappedValue = error {
-        return bridge.create_std__optional_std__string_(std.string(__unwrappedValue))
-      } else {
-        return .init()
-      }
-    }())
+  init(success: Bool, error: String) {
+    self.init(success, std.string(error))
   }
 
   var success: Bool {
@@ -40,27 +34,14 @@ public extension SKANConversionResult {
     }
   }
   
-  var error: String? {
+  var error: String {
     @inline(__always)
     get {
-      return { () -> String? in
-        if bridge.has_value_std__optional_std__string_(self.__error) {
-          let __unwrapped = bridge.get_std__optional_std__string_(self.__error)
-          return String(__unwrapped)
-        } else {
-          return nil
-        }
-      }()
+      return String(self.__error)
     }
     @inline(__always)
     set {
-      self.__error = { () -> bridge.std__optional_std__string_ in
-        if let __unwrappedValue = newValue {
-          return bridge.create_std__optional_std__string_(std.string(__unwrappedValue))
-        } else {
-          return .init()
-        }
-      }()
+      self.__error = std.string(newValue)
     }
   }
 }

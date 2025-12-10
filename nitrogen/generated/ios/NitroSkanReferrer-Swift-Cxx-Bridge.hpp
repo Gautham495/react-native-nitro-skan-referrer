@@ -32,7 +32,6 @@ namespace NitroSkanReferrer { class HybridNitroSkanReferrerSpec_cxx; }
 #include <exception>
 #include <functional>
 #include <memory>
-#include <optional>
 #include <string>
 
 /**
@@ -41,36 +40,6 @@ namespace NitroSkanReferrer { class HybridNitroSkanReferrerSpec_cxx; }
  */
 namespace margelo::nitro::nitroskanreferrer::bridge::swift {
 
-  // pragma MARK: std::optional<std::string>
-  /**
-   * Specialized version of `std::optional<std::string>`.
-   */
-  using std__optional_std__string_ = std::optional<std::string>;
-  inline std::optional<std::string> create_std__optional_std__string_(const std::string& value) noexcept {
-    return std::optional<std::string>(value);
-  }
-  inline bool has_value_std__optional_std__string_(const std::optional<std::string>& optional) noexcept {
-    return optional.has_value();
-  }
-  inline std::string get_std__optional_std__string_(const std::optional<std::string>& optional) noexcept {
-    return *optional;
-  }
-  
-  // pragma MARK: std::optional<InstallReferrerDetails>
-  /**
-   * Specialized version of `std::optional<InstallReferrerDetails>`.
-   */
-  using std__optional_InstallReferrerDetails_ = std::optional<InstallReferrerDetails>;
-  inline std::optional<InstallReferrerDetails> create_std__optional_InstallReferrerDetails_(const InstallReferrerDetails& value) noexcept {
-    return std::optional<InstallReferrerDetails>(value);
-  }
-  inline bool has_value_std__optional_InstallReferrerDetails_(const std::optional<InstallReferrerDetails>& optional) noexcept {
-    return optional.has_value();
-  }
-  inline InstallReferrerDetails get_std__optional_InstallReferrerDetails_(const std::optional<InstallReferrerDetails>& optional) noexcept {
-    return *optional;
-  }
-  
   // pragma MARK: std::shared_ptr<Promise<ReferrerResult>>
   /**
    * Specialized version of `std::shared_ptr<Promise<ReferrerResult>>`.

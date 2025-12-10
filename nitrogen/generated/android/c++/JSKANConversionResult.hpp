@@ -10,7 +10,6 @@
 #include <fbjni/fbjni.h>
 #include "SKANConversionResult.hpp"
 
-#include <optional>
 #include <string>
 
 namespace margelo::nitro::nitroskanreferrer {
@@ -38,7 +37,7 @@ namespace margelo::nitro::nitroskanreferrer {
       jni::local_ref<jni::JString> error = this->getFieldValue(fieldError);
       return SKANConversionResult(
         static_cast<bool>(success),
-        error != nullptr ? std::make_optional(error->toStdString()) : std::nullopt
+        error->toStdString()
       );
     }
 
@@ -54,7 +53,7 @@ namespace margelo::nitro::nitroskanreferrer {
       return create(
         clazz,
         value.success,
-        value.error.has_value() ? jni::make_jstring(value.error.value()) : nullptr
+        jni::make_jstring(value.error)
       );
     }
   };

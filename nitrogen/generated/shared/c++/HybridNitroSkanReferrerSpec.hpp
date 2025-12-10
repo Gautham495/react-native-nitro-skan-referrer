@@ -17,13 +17,11 @@
 namespace margelo::nitro::nitroskanreferrer { struct ReferrerResult; }
 // Forward declaration of `SKANConversionResult` to properly resolve imports.
 namespace margelo::nitro::nitroskanreferrer { struct SKANConversionResult; }
-// Forward declaration of `CoarseValue` to properly resolve imports.
-namespace margelo::nitro::nitroskanreferrer { enum class CoarseValue; }
 
 #include "ReferrerResult.hpp"
 #include <NitroModules/Promise.hpp>
 #include "SKANConversionResult.hpp"
-#include "CoarseValue.hpp"
+#include <string>
 
 namespace margelo::nitro::nitroskanreferrer {
 
@@ -59,7 +57,7 @@ namespace margelo::nitro::nitroskanreferrer {
       virtual std::shared_ptr<Promise<ReferrerResult>> getInstallReferrer() = 0;
       virtual std::shared_ptr<Promise<SKANConversionResult>> registerAppForAdNetworkAttribution() = 0;
       virtual std::shared_ptr<Promise<SKANConversionResult>> updateConversionValue(double fineValue) = 0;
-      virtual std::shared_ptr<Promise<SKANConversionResult>> updatePostbackConversionValue(double fineValue, CoarseValue coarseValue, bool lockWindow) = 0;
+      virtual std::shared_ptr<Promise<SKANConversionResult>> updatePostbackConversionValue(double fineValue, const std::string& coarseValue, bool lockWindow) = 0;
 
     protected:
       // Hybrid Setup

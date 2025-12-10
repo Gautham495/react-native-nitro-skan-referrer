@@ -3,21 +3,38 @@ package com.margelo.nitro.nitroskanreferrer
 import android.content.Context
 import com.android.installreferrer.api.InstallReferrerClient
 import com.android.installreferrer.api.InstallReferrerStateListener
-import com.android.installreferrer.api.ReferrerDetails
 import com.facebook.proguard.annotations.DoNotStrip
+import com.facebook.react.bridge.ReactApplicationContext
 import com.margelo.nitro.core.Promise
+import com.margelo.nitro.NitroModules
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
+
 
 @DoNotStrip
-class NitroSkanReferrer(private val appContext: Context) : HybridNitroSkanReferrerSpec() {
+class NitroSkanReferrer : HybridNitroSkanReferrerSpec() {
+
+    // Get context from NitroModules instead of constructor injection
+    private val appContext: Context
+        get() = NitroModules.applicationContext 
+            ?: throw IllegalStateException("Application context not available")
 
     private var referrerClient: InstallReferrerClient? = null
 
-    // -------------------------------------------------------
+    // Dummy details (Nitro-safe)
+    private fun dummyDetails() = InstallReferrerDetails(
+        installReferrer = "",
+        referrerClickTimestampSeconds = 0.0,
+        installBeginTimestampSeconds = 0.0,
+        referrerClickTimestampServerSeconds = 0.0,
+        installBeginTimestampServerSeconds = 0.0,
+        googlePlayInstantParam = false,
+        installVersion = ""
+    )
+
+    // ---------------------------------------------------------------------
     // ANDROID: Install Referrer
-    // -------------------------------------------------------
+    // ---------------------------------------------------------------------
     override fun getInstallReferrer(): Promise<ReferrerResult> {
         return Promise.async {
             suspendCancellableCoroutine { continuation ->
@@ -34,17 +51,23 @@ class NitroSkanReferrer(private val appContext: Context) : HybridNitroSkanReferr
 
                         override fun onInstallReferrerSetupFinished(responseCode: Int) {
                             when (responseCode) {
+
                                 InstallReferrerClient.InstallReferrerResponse.OK -> {
                                     try {
-                                        val response: ReferrerDetails = client.installReferrer
+                                        val response = client.installReferrer
+
                                         val details = InstallReferrerDetails(
                                             installReferrer = response.installReferrer ?: "",
-                                            referrerClickTimestampSeconds = response.referrerClickTimestampSeconds.toDouble(),
-                                            installBeginTimestampSeconds = response.installBeginTimestampSeconds.toDouble(),
-                                            referrerClickTimestampServerSeconds = response.referrerClickTimestampServerSeconds.toDouble(),
-                                            installBeginTimestampServerSeconds = response.installBeginTimestampServerSeconds.toDouble(),
+                                            referrerClickTimestampSeconds =
+                                                response.referrerClickTimestampSeconds.toDouble(),
+                                            installBeginTimestampSeconds =
+                                                response.installBeginTimestampSeconds.toDouble(),
+                                            referrerClickTimestampServerSeconds =
+                                                response.referrerClickTimestampServerSeconds.toDouble(),
+                                            installBeginTimestampServerSeconds =
+                                                response.installBeginTimestampServerSeconds.toDouble(),
                                             googlePlayInstantParam = response.googlePlayInstantParam,
-                                            installVersion = response.installVersion
+                                            installVersion = response.installVersion ?: ""
                                         )
 
                                         safeResume(
@@ -52,16 +75,16 @@ class NitroSkanReferrer(private val appContext: Context) : HybridNitroSkanReferr
                                                 success = true,
                                                 data = details,
                                                 error = "ok",
-                                                errorMessage = null
+                                                errorMessage = ""
                                             )
                                         )
                                     } catch (e: Exception) {
                                         safeResume(
                                             ReferrerResult(
                                                 success = false,
-                                                data = null,
+                                                data = dummyDetails(),
                                                 error = "exception",
-                                                errorMessage = e.message
+                                                errorMessage = e.message ?: ""
                                             )
                                         )
                                     } finally {
@@ -69,41 +92,35 @@ class NitroSkanReferrer(private val appContext: Context) : HybridNitroSkanReferr
                                     }
                                 }
 
-                                InstallReferrerClient.InstallReferrerResponse.FEATURE_NOT_SUPPORTED -> {
+                                InstallReferrerClient.InstallReferrerResponse.FEATURE_NOT_SUPPORTED ->
                                     safeResume(
                                         ReferrerResult(
                                             success = false,
-                                            data = null,
+                                            data = dummyDetails(),
                                             error = "featureNotSupported",
                                             errorMessage = "Install Referrer API not supported"
                                         )
                                     )
-                                    client.endConnection()
-                                }
 
-                                InstallReferrerClient.InstallReferrerResponse.SERVICE_UNAVAILABLE -> {
+                                InstallReferrerClient.InstallReferrerResponse.SERVICE_UNAVAILABLE ->
                                     safeResume(
                                         ReferrerResult(
                                             success = false,
-                                            data = null,
+                                            data = dummyDetails(),
                                             error = "serviceUnavailable",
                                             errorMessage = "Play Store service unavailable"
                                         )
                                     )
-                                    client.endConnection()
-                                }
 
-                                else -> {
+                                else ->
                                     safeResume(
                                         ReferrerResult(
                                             success = false,
-                                            data = null,
+                                            data = dummyDetails(),
                                             error = "unknown",
                                             errorMessage = "Unknown response code: $responseCode"
                                         )
                                     )
-                                    client.endConnection()
-                                }
                             }
                         }
 
@@ -111,7 +128,7 @@ class NitroSkanReferrer(private val appContext: Context) : HybridNitroSkanReferr
                             safeResume(
                                 ReferrerResult(
                                     success = false,
-                                    data = null,
+                                    data = dummyDetails(),
                                     error = "serviceDisconnected",
                                     errorMessage = "Service disconnected"
                                 )
@@ -123,53 +140,35 @@ class NitroSkanReferrer(private val appContext: Context) : HybridNitroSkanReferr
                     safeResume(
                         ReferrerResult(
                             success = false,
-                            data = null,
+                            data = dummyDetails(),
                             error = "exception",
-                            errorMessage = e.message
+                            errorMessage = e.message ?: ""
                         )
                     )
                     client.endConnection()
                 }
 
-                continuation.invokeOnCancellation {
-                    client.endConnection()
-                }
+                continuation.invokeOnCancellation { client.endConnection() }
             }
         }
     }
 
-    // -------------------------------------------------------
-    // iOS ONLY — Stub implementations for Android
-    // -------------------------------------------------------
+    // ---------------------------------------------------------------------
+    // iOS ONLY — Stub implementations (Nitro-safe)
+    // ---------------------------------------------------------------------
+    override fun registerAppForAdNetworkAttribution() = Promise.resolved(
+        SKANConversionResult(false, "SKAdNetwork is only available on iOS")
+    )
 
-    override fun registerAppForAdNetworkAttribution(): Promise<SKANConversionResult> {
-        return Promise.resolved(
-            SKANConversionResult(
-                success = false,
-                error = "SKAdNetwork is only available on iOS"
-            )
-        )
-    }
-
-    override fun updateConversionValue(fineValue: Double): Promise<SKANConversionResult> {
-        return Promise.resolved(
-            SKANConversionResult(
-                success = false,
-                error = "SKAdNetwork is only available on iOS"
-            )
-        )
-    }
+    override fun updateConversionValue(fineValue: Double) = Promise.resolved(
+        SKANConversionResult(false, "SKAdNetwork is only available on iOS")
+    )
 
     override fun updatePostbackConversionValue(
         fineValue: Double,
-        coarseValue: CoarseValue,
+        coarseValue: String,
         lockWindow: Boolean
-    ): Promise<SKANConversionResult> {
-        return Promise.resolved(
-            SKANConversionResult(
-                success = false,
-                error = "SKAdNetwork is only available on iOS"
-            )
-        )
-    }
+    ) = Promise.resolved(
+        SKANConversionResult(false, "SKAdNetwork is only available on iOS")
+    )
 }

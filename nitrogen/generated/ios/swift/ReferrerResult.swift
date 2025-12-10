@@ -19,20 +19,8 @@ public extension ReferrerResult {
   /**
    * Create a new instance of `ReferrerResult`.
    */
-  init(success: Bool, data: InstallReferrerDetails?, error: String, errorMessage: String?) {
-    self.init(success, { () -> bridge.std__optional_InstallReferrerDetails_ in
-      if let __unwrappedValue = data {
-        return bridge.create_std__optional_InstallReferrerDetails_(__unwrappedValue)
-      } else {
-        return .init()
-      }
-    }(), std.string(error), { () -> bridge.std__optional_std__string_ in
-      if let __unwrappedValue = errorMessage {
-        return bridge.create_std__optional_std__string_(std.string(__unwrappedValue))
-      } else {
-        return .init()
-      }
-    }())
+  init(success: Bool, data: InstallReferrerDetails, error: String, errorMessage: String) {
+    self.init(success, data, std.string(error), std.string(errorMessage))
   }
 
   var success: Bool {
@@ -46,20 +34,14 @@ public extension ReferrerResult {
     }
   }
   
-  var data: InstallReferrerDetails? {
+  var data: InstallReferrerDetails {
     @inline(__always)
     get {
-      return self.__data.value
+      return self.__data
     }
     @inline(__always)
     set {
-      self.__data = { () -> bridge.std__optional_InstallReferrerDetails_ in
-        if let __unwrappedValue = newValue {
-          return bridge.create_std__optional_InstallReferrerDetails_(__unwrappedValue)
-        } else {
-          return .init()
-        }
-      }()
+      self.__data = newValue
     }
   }
   
@@ -74,27 +56,14 @@ public extension ReferrerResult {
     }
   }
   
-  var errorMessage: String? {
+  var errorMessage: String {
     @inline(__always)
     get {
-      return { () -> String? in
-        if bridge.has_value_std__optional_std__string_(self.__errorMessage) {
-          let __unwrapped = bridge.get_std__optional_std__string_(self.__errorMessage)
-          return String(__unwrapped)
-        } else {
-          return nil
-        }
-      }()
+      return String(self.__errorMessage)
     }
     @inline(__always)
     set {
-      self.__errorMessage = { () -> bridge.std__optional_std__string_ in
-        if let __unwrappedValue = newValue {
-          return bridge.create_std__optional_std__string_(std.string(__unwrappedValue))
-        } else {
-          return .init()
-        }
-      }()
+      self.__errorMessage = std.string(newValue)
     }
   }
 }

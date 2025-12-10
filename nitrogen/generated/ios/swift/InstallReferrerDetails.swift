@@ -19,14 +19,8 @@ public extension InstallReferrerDetails {
   /**
    * Create a new instance of `InstallReferrerDetails`.
    */
-  init(installReferrer: String, referrerClickTimestampSeconds: Double, installBeginTimestampSeconds: Double, referrerClickTimestampServerSeconds: Double, installBeginTimestampServerSeconds: Double, googlePlayInstantParam: Bool, installVersion: String?) {
-    self.init(std.string(installReferrer), referrerClickTimestampSeconds, installBeginTimestampSeconds, referrerClickTimestampServerSeconds, installBeginTimestampServerSeconds, googlePlayInstantParam, { () -> bridge.std__optional_std__string_ in
-      if let __unwrappedValue = installVersion {
-        return bridge.create_std__optional_std__string_(std.string(__unwrappedValue))
-      } else {
-        return .init()
-      }
-    }())
+  init(installReferrer: String, referrerClickTimestampSeconds: Double, installBeginTimestampSeconds: Double, referrerClickTimestampServerSeconds: Double, installBeginTimestampServerSeconds: Double, googlePlayInstantParam: Bool, installVersion: String) {
+    self.init(std.string(installReferrer), referrerClickTimestampSeconds, installBeginTimestampSeconds, referrerClickTimestampServerSeconds, installBeginTimestampServerSeconds, googlePlayInstantParam, std.string(installVersion))
   }
 
   var installReferrer: String {
@@ -95,27 +89,14 @@ public extension InstallReferrerDetails {
     }
   }
   
-  var installVersion: String? {
+  var installVersion: String {
     @inline(__always)
     get {
-      return { () -> String? in
-        if bridge.has_value_std__optional_std__string_(self.__installVersion) {
-          let __unwrapped = bridge.get_std__optional_std__string_(self.__installVersion)
-          return String(__unwrapped)
-        } else {
-          return nil
-        }
-      }()
+      return String(self.__installVersion)
     }
     @inline(__always)
     set {
-      self.__installVersion = { () -> bridge.std__optional_std__string_ in
-        if let __unwrappedValue = newValue {
-          return bridge.create_std__optional_std__string_(std.string(__unwrappedValue))
-        } else {
-          return .init()
-        }
-      }()
+      self.__installVersion = std.string(newValue)
     }
   }
 }

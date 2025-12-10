@@ -22,13 +22,13 @@ data class ReferrerResult(
   val success: Boolean,
   @DoNotStrip
   @Keep
-  val data: InstallReferrerDetails?,
+  val data: InstallReferrerDetails,
   @DoNotStrip
   @Keep
   val error: String,
   @DoNotStrip
   @Keep
-  val errorMessage: String?
+  val errorMessage: String
 ) {
   /* primary constructor */
 
@@ -40,7 +40,7 @@ data class ReferrerResult(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(success: Boolean, data: InstallReferrerDetails?, error: String, errorMessage: String?): ReferrerResult {
+    private fun fromCpp(success: Boolean, data: InstallReferrerDetails, error: String, errorMessage: String): ReferrerResult {
       return ReferrerResult(success, data, error, errorMessage)
     }
   }

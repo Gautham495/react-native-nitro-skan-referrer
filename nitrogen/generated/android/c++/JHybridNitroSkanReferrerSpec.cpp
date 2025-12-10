@@ -13,21 +13,16 @@ namespace margelo::nitro::nitroskanreferrer { struct ReferrerResult; }
 namespace margelo::nitro::nitroskanreferrer { struct InstallReferrerDetails; }
 // Forward declaration of `SKANConversionResult` to properly resolve imports.
 namespace margelo::nitro::nitroskanreferrer { struct SKANConversionResult; }
-// Forward declaration of `CoarseValue` to properly resolve imports.
-namespace margelo::nitro::nitroskanreferrer { enum class CoarseValue; }
 
 #include "ReferrerResult.hpp"
 #include <NitroModules/Promise.hpp>
 #include <NitroModules/JPromise.hpp>
 #include "JReferrerResult.hpp"
 #include "InstallReferrerDetails.hpp"
-#include <optional>
 #include "JInstallReferrerDetails.hpp"
 #include <string>
 #include "SKANConversionResult.hpp"
 #include "JSKANConversionResult.hpp"
-#include "CoarseValue.hpp"
-#include "JCoarseValue.hpp"
 
 namespace margelo::nitro::nitroskanreferrer {
 
@@ -109,9 +104,9 @@ namespace margelo::nitro::nitroskanreferrer {
       return __promise;
     }();
   }
-  std::shared_ptr<Promise<SKANConversionResult>> JHybridNitroSkanReferrerSpec::updatePostbackConversionValue(double fineValue, CoarseValue coarseValue, bool lockWindow) {
-    static const auto method = javaClassStatic()->getMethod<jni::local_ref<JPromise::javaobject>(double /* fineValue */, jni::alias_ref<JCoarseValue> /* coarseValue */, jboolean /* lockWindow */)>("updatePostbackConversionValue");
-    auto __result = method(_javaPart, fineValue, JCoarseValue::fromCpp(coarseValue), lockWindow);
+  std::shared_ptr<Promise<SKANConversionResult>> JHybridNitroSkanReferrerSpec::updatePostbackConversionValue(double fineValue, const std::string& coarseValue, bool lockWindow) {
+    static const auto method = javaClassStatic()->getMethod<jni::local_ref<JPromise::javaobject>(double /* fineValue */, jni::alias_ref<jni::JString> /* coarseValue */, jboolean /* lockWindow */)>("updatePostbackConversionValue");
+    auto __result = method(_javaPart, fineValue, jni::make_jstring(coarseValue), lockWindow);
     return [&]() {
       auto __promise = Promise<SKANConversionResult>::create();
       __result->cthis()->addOnResolvedListener([=](const jni::alias_ref<jni::JObject>& __boxedResult) {

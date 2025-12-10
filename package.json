@@ -1,7 +1,7 @@
 {
   "name": "react-native-nitro-skan-referrer",
   "version": "1.0.5",
-  "description": "Apple SKAN & Google Refferer API with Nitro Modules",
+  "description": "React Native Nitro Module library to access Apple SKAN & Google Refferer API",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
   "exports": {

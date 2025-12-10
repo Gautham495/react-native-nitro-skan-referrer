@@ -60,7 +60,7 @@ abstract class HybridNitroSkanReferrerSpec: HybridObject() {
   
   @DoNotStrip
   @Keep
-  abstract fun updatePostbackConversionValue(fineValue: Double, coarseValue: CoarseValue, lockWindow: Boolean): Promise<SKANConversionResult>
+  abstract fun updatePostbackConversionValue(fineValue: Double, coarseValue: String, lockWindow: Boolean): Promise<SKANConversionResult>
 
   private external fun initHybrid(): HybridData
 

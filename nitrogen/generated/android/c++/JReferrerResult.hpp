@@ -12,7 +12,6 @@
 
 #include "InstallReferrerDetails.hpp"
 #include "JInstallReferrerDetails.hpp"
-#include <optional>
 #include <string>
 
 namespace margelo::nitro::nitroskanreferrer {
@@ -44,9 +43,9 @@ namespace margelo::nitro::nitroskanreferrer {
       jni::local_ref<jni::JString> errorMessage = this->getFieldValue(fieldErrorMessage);
       return ReferrerResult(
         static_cast<bool>(success),
-        data != nullptr ? std::make_optional(data->toCpp()) : std::nullopt,
+        data->toCpp(),
         error->toStdString(),
-        errorMessage != nullptr ? std::make_optional(errorMessage->toStdString()) : std::nullopt
+        errorMessage->toStdString()
       );
     }
 
@@ -62,9 +61,9 @@ namespace margelo::nitro::nitroskanreferrer {
       return create(
         clazz,
         value.success,
-        value.data.has_value() ? JInstallReferrerDetails::fromCpp(value.data.value()) : nullptr,
+        JInstallReferrerDetails::fromCpp(value.data),
         jni::make_jstring(value.error),
-        value.errorMessage.has_value() ? jni::make_jstring(value.errorMessage.value()) : nullptr
+        jni::make_jstring(value.errorMessage)
       );
     }
   };

@@ -22,7 +22,7 @@ data class SKANConversionResult(
   val success: Boolean,
   @DoNotStrip
   @Keep
-  val error: String?
+  val error: String
 ) {
   /* primary constructor */
 
@@ -34,7 +34,7 @@ data class SKANConversionResult(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(success: Boolean, error: String?): SKANConversionResult {
+    private fun fromCpp(success: Boolean, error: String): SKANConversionResult {
       return SKANConversionResult(success, error)
     }
   }

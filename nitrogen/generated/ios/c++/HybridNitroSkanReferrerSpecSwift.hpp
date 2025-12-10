@@ -18,16 +18,12 @@ namespace margelo::nitro::nitroskanreferrer { struct ReferrerResult; }
 namespace margelo::nitro::nitroskanreferrer { struct InstallReferrerDetails; }
 // Forward declaration of `SKANConversionResult` to properly resolve imports.
 namespace margelo::nitro::nitroskanreferrer { struct SKANConversionResult; }
-// Forward declaration of `CoarseValue` to properly resolve imports.
-namespace margelo::nitro::nitroskanreferrer { enum class CoarseValue; }
 
 #include "ReferrerResult.hpp"
 #include <NitroModules/Promise.hpp>
 #include "InstallReferrerDetails.hpp"
-#include <optional>
 #include <string>
 #include "SKANConversionResult.hpp"
-#include "CoarseValue.hpp"
 
 #include "NitroSkanReferrer-Swift-Cxx-Umbrella.hpp"
 
@@ -97,8 +93,8 @@ namespace margelo::nitro::nitroskanreferrer {
       auto __value = std::move(__result.value());
       return __value;
     }
-    inline std::shared_ptr<Promise<SKANConversionResult>> updatePostbackConversionValue(double fineValue, CoarseValue coarseValue, bool lockWindow) override {
-      auto __result = _swiftPart.updatePostbackConversionValue(std::forward<decltype(fineValue)>(fineValue), static_cast<int>(coarseValue), std::forward<decltype(lockWindow)>(lockWindow));
+    inline std::shared_ptr<Promise<SKANConversionResult>> updatePostbackConversionValue(double fineValue, const std::string& coarseValue, bool lockWindow) override {
+      auto __result = _swiftPart.updatePostbackConversionValue(std::forward<decltype(fineValue)>(fineValue), coarseValue, std::forward<decltype(lockWindow)>(lockWindow));
       if (__result.hasError()) [[unlikely]] {
         std::rethrow_exception(__result.error());
       }

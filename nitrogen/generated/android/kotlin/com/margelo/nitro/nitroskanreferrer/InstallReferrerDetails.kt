@@ -37,7 +37,7 @@ data class InstallReferrerDetails(
   val googlePlayInstantParam: Boolean,
   @DoNotStrip
   @Keep
-  val installVersion: String?
+  val installVersion: String
 ) {
   /* primary constructor */
 
@@ -49,7 +49,7 @@ data class InstallReferrerDetails(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(installReferrer: String, referrerClickTimestampSeconds: Double, installBeginTimestampSeconds: Double, referrerClickTimestampServerSeconds: Double, installBeginTimestampServerSeconds: Double, googlePlayInstantParam: Boolean, installVersion: String?): InstallReferrerDetails {
+    private fun fromCpp(installReferrer: String, referrerClickTimestampSeconds: Double, installBeginTimestampSeconds: Double, referrerClickTimestampServerSeconds: Double, installBeginTimestampServerSeconds: Double, googlePlayInstantParam: Boolean, installVersion: String): InstallReferrerDetails {
       return InstallReferrerDetails(installReferrer, referrerClickTimestampSeconds, installBeginTimestampSeconds, referrerClickTimestampServerSeconds, installBeginTimestampServerSeconds, googlePlayInstantParam, installVersion)
     }
   }

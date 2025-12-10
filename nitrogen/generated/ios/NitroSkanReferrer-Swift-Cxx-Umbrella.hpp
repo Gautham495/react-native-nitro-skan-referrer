@@ -8,8 +8,6 @@
 #pragma once
 
 // Forward declarations of C++ defined types
-// Forward declaration of `CoarseValue` to properly resolve imports.
-namespace margelo::nitro::nitroskanreferrer { enum class CoarseValue; }
 // Forward declaration of `HybridNitroSkanReferrerSpec` to properly resolve imports.
 namespace margelo::nitro::nitroskanreferrer { class HybridNitroSkanReferrerSpec; }
 // Forward declaration of `InstallReferrerDetails` to properly resolve imports.
@@ -20,7 +18,6 @@ namespace margelo::nitro::nitroskanreferrer { struct ReferrerResult; }
 namespace margelo::nitro::nitroskanreferrer { struct SKANConversionResult; }
 
 // Include C++ defined types
-#include "CoarseValue.hpp"
 #include "HybridNitroSkanReferrerSpec.hpp"
 #include "InstallReferrerDetails.hpp"
 #include "ReferrerResult.hpp"
@@ -29,7 +26,6 @@ namespace margelo::nitro::nitroskanreferrer { struct SKANConversionResult; }
 #include <NitroModules/Result.hpp>
 #include <exception>
 #include <memory>
-#include <optional>
 #include <string>
 
 // C++ helpers for Swift

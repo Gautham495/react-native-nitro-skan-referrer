@@ -34,6 +34,23 @@ npm install react-native-nitro-skan-referrer react-native-nitro-modules
 > iOS supports **SKAdNetwork** conversion values.
 > Android supports the **Install Referrer API**.
 
+## Demo
+
+<table>
+  <tr>
+    <th align="center">🍏 iOS Demo</th>
+    <th align="center">🤖 Android Demo</th>
+  </tr>
+  <tr>
+    <td align="center">
+    <img alt="android" src="./docs/img//iOS.png"  height="650" width="300"/>
+    </td>
+    <td align="center">
+     <img alt="android" src="./docs/img/android.png"  height="650" width="300"/>
+    </td>
+  </tr>
+</table>
+
 ---
 
 ## 🧠 Overview
@@ -52,6 +69,42 @@ npm install react-native-nitro-skan-referrer react-native-nitro-modules
 If you’re using SKAdNetwork postback APIs (iOS 16.1+), ensure the appropriate Apple SKAN entries exist in your **`Info.plist`** or entitlement file as required by your ad network.
 
 No custom entitlements are required for this library.
+
+Steps to get SKAN working
+
+- Build your Release version
+
+- Upload it to the App Store (production or TestFlight with StoreKit config)
+
+- Serve an actual SKAdNetwork ad from:
+
+1. Meta Ads
+
+2. Google Ads
+
+3. TikTok Ads
+
+4. Snap Ads
+
+5. Unity Ads
+
+- Tap the ad → it opens your App Store page
+
+- User installs the app from that ad
+
+- User triggers events → SKAN conversion values are updated
+
+- Apple sends a postback after 24–72 hours
+
+- Ad network receives your conversion value
+
+- Only then SKAN updates succeed.
+
+Error 10 = "Not Eligible / Not a Valid Ad Conversion"
+
+- Happens when testing in dev mode or apple does not know if your ad was served from an adnetwork
+
+- So do test in production setting.
 
 ### **Android**
 

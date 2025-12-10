@@ -26,7 +26,6 @@
 
 
 #include <string>
-#include <optional>
 
 namespace margelo::nitro::nitroskanreferrer {
 
@@ -36,11 +35,11 @@ namespace margelo::nitro::nitroskanreferrer {
   struct SKANConversionResult {
   public:
     bool success     SWIFT_PRIVATE;
-    std::optional<std::string> error     SWIFT_PRIVATE;
+    std::string error     SWIFT_PRIVATE;
 
   public:
     SKANConversionResult() = default;
-    explicit SKANConversionResult(bool success, std::optional<std::string> error): success(success), error(error) {}
+    explicit SKANConversionResult(bool success, std::string error): success(success), error(error) {}
   };
 
 } // namespace margelo::nitro::nitroskanreferrer
@@ -54,13 +53,13 @@ namespace margelo::nitro {
       jsi::Object obj = arg.asObject(runtime);
       return margelo::nitro::nitroskanreferrer::SKANConversionResult(
         JSIConverter<bool>::fromJSI(runtime, obj.getProperty(runtime, "success")),
-        JSIConverter<std::optional<std::string>>::fromJSI(runtime, obj.getProperty(runtime, "error"))
+        JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, "error"))
       );
     }
     static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::nitroskanreferrer::SKANConversionResult& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, "success", JSIConverter<bool>::toJSI(runtime, arg.success));
-      obj.setProperty(runtime, "error", JSIConverter<std::optional<std::string>>::toJSI(runtime, arg.error));
+      obj.setProperty(runtime, "error", JSIConverter<std::string>::toJSI(runtime, arg.error));
       return obj;
     }
     static inline bool canConvert(jsi::Runtime& runtime, const jsi::Value& value) {
@@ -72,7 +71,7 @@ namespace margelo::nitro {
         return false;
       }
       if (!JSIConverter<bool>::canConvert(runtime, obj.getProperty(runtime, "success"))) return false;
-      if (!JSIConverter<std::optional<std::string>>::canConvert(runtime, obj.getProperty(runtime, "error"))) return false;
+      if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, "error"))) return false;
       return true;
     }
   };

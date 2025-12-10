@@ -175,9 +175,9 @@ open class HybridNitroSkanReferrerSpec_cxx {
   }
   
   @inline(__always)
-  public final func updatePostbackConversionValue(fineValue: Double, coarseValue: Int32, lockWindow: Bool) -> bridge.Result_std__shared_ptr_Promise_SKANConversionResult___ {
+  public final func updatePostbackConversionValue(fineValue: Double, coarseValue: std.string, lockWindow: Bool) -> bridge.Result_std__shared_ptr_Promise_SKANConversionResult___ {
     do {
-      let __result = try self.__implementation.updatePostbackConversionValue(fineValue: fineValue, coarseValue: margelo.nitro.nitroskanreferrer.CoarseValue(rawValue: coarseValue)!, lockWindow: lockWindow)
+      let __result = try self.__implementation.updatePostbackConversionValue(fineValue: fineValue, coarseValue: String(coarseValue), lockWindow: lockWindow)
       let __resultCpp = { () -> bridge.std__shared_ptr_Promise_SKANConversionResult__ in
         let __promise = bridge.create_std__shared_ptr_Promise_SKANConversionResult__()
         let __promiseHolder = bridge.wrap_std__shared_ptr_Promise_SKANConversionResult__(__promise)
