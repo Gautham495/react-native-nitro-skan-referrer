@@ -1,0 +1,17 @@
+{
+  "cxxNamespace": ["nitroskanreferrer"],
+  "ios": {
+    "iosModuleName": "NitroSkanReferrer"
+  },
+  "android": {
+    "androidNamespace": ["nitroskanreferrer"],
+    "androidCxxLibName": "nitroskanreferrer"
+  },
+  "autolinking": {
+    "NitroSkanReferrer": {
+      "swift": "NitroSkanReferrer",
+      "kotlin": "NitroSkanReferrer"
+    }
+  },
+  "ignorePaths": ["node_modules"]
+}
