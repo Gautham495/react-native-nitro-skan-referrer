@@ -4,7 +4,6 @@ import type {
   InstallReferrerDetails,
   ReferrerResult,
   SKANConversionResult,
-  CoarseValue,
 } from './NitroSkanReferrer.nitro';
 
 const NitroSkanReferrerModule =
@@ -106,5 +105,4 @@ export type {
   InstallReferrerDetails,
   ReferrerResult,
   SKANConversionResult,
-  CoarseValue,
 };
