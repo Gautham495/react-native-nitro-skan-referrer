@@ -72,7 +72,7 @@ export default function App() {
   useEffect(() => {
     if (isAndroid) fetchAndroidReferrer();
     if (isiOS) initializeSKAN();
-  }, [isAndroid, isiOS]);
+  }, []);
 
   const trackConversionEvent = async (label: string, value: number) => {
     try {
