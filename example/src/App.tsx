@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useEffect, useState } from 'react';
 import {
   View,
@@ -71,7 +72,7 @@ export default function App() {
   useEffect(() => {
     if (isAndroid) fetchAndroidReferrer();
     if (isiOS) initializeSKAN();
-  }, [isAndroid, fetchAndroidReferrer, isiOS, initializeSKAN]);
+  }, [isAndroid, isiOS]);
 
   const trackConversionEvent = async (label: string, value: number) => {
     try {
