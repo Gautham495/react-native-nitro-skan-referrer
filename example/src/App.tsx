@@ -1,5 +1,7 @@
-// @ts-nocheck
-import { useEffect, useState } from 'react';
+import {
+  // useEffect,
+  useState,
+} from 'react';
 import {
   View,
   Text,
@@ -11,7 +13,7 @@ import {
 
 import {
   getInstallReferrer,
-  registerAppForAdNetworkAttribution,
+  // registerAppForAdNetworkAttribution,
   updateConversionValue,
   updatePostbackConversionValue,
   isReferrerSuccess,
@@ -56,23 +58,23 @@ export default function App() {
     }
   };
 
-  const initializeSKAN = async () => {
-    try {
-      const result = await registerAppForAdNetworkAttribution();
-      setSkanStatus(
-        isSKANSuccess(result)
-          ? 'Registered successfully'
-          : `Registration failed: ${result.error}`
-      );
-    } catch (err) {
-      setSkanStatus(String(err));
-    }
-  };
+  // const initializeSKAN = async () => {
+  //   try {
+  //     const result = await registerAppForAdNetworkAttribution();
+  //     setSkanStatus(
+  //       isSKANSuccess(result)
+  //         ? 'Registered successfully'
+  //         : `Registration failed: ${result.error}`
+  //     );
+  //   } catch (err) {
+  //     setSkanStatus(String(err));
+  //   }
+  // };
 
-  useEffect(() => {
-    if (isAndroid) fetchAndroidReferrer();
-    if (isiOS) initializeSKAN();
-  }, []);
+  // useEffect(() => {
+  //   if (isAndroid) fetchAndroidReferrer();
+  //   if (isiOS) initializeSKAN();
+  // }, []);
 
   const trackConversionEvent = async (label: string, value: number) => {
     try {
