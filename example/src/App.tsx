@@ -29,11 +29,6 @@ export default function App() {
   const isAndroid = Platform.OS === 'android';
   const isiOS = Platform.OS === 'ios';
 
-  useEffect(() => {
-    if (isAndroid) fetchAndroidReferrer();
-    if (isiOS) initializeSKAN();
-  }, []);
-
   const fetchAndroidReferrer = async () => {
     try {
       const result: ReferrerResult = await getInstallReferrer();
@@ -72,6 +67,11 @@ export default function App() {
       setSkanStatus(String(err));
     }
   };
+
+  useEffect(() => {
+    if (isAndroid) fetchAndroidReferrer();
+    if (isiOS) initializeSKAN();
+  }, [isAndroid, fetchAndroidReferrer, isiOS, initializeSKAN]);
 
   const trackConversionEvent = async (label: string, value: number) => {
     try {
@@ -199,9 +199,7 @@ export default function App() {
             />
           </View>
 
-          <Text style={[styles.cardTitle, { marginTop: 20 }]}>
-            Postback Events (iOS 16.1+)
-          </Text>
+          <Text style={styles.cardTitle}>Postback Events (iOS 16.1+)</Text>
 
           <View style={styles.buttonGroup}>
             <PrimaryButton
@@ -273,6 +271,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '700',
     marginBottom: 15,
+    marginTop: 20,
   },
   infoRow: {
     marginBottom: 12,
