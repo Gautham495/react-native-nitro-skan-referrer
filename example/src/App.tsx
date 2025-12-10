@@ -17,7 +17,6 @@ import {
   isSKANSuccess,
   parseReferrerParams,
   type ReferrerResult,
-  type SKANConversionResult,
   type InstallReferrerDetails,
 } from 'react-native-nitro-skan-referrer';
 
@@ -54,7 +53,7 @@ export default function App() {
         });
       } else {
         setReferrerData(null);
-        setReferrerError(`${result.error}: ${result.errorMessage || ''}`);
+        setReferrerError(`${result}: ${result || ''}`);
       }
     } catch (err) {
       setReferrerError(String(err));
@@ -130,7 +129,10 @@ export default function App() {
 
           {referrerData && (
             <View>
-              <InfoRow label="Install Referrer" value={referrerData.installReferrer} />
+              <InfoRow
+                label="Install Referrer"
+                value={referrerData.installReferrer}
+              />
               <InfoRow
                 label="Click Time"
                 value={new Date(
@@ -143,7 +145,10 @@ export default function App() {
                   referrerData.installBeginTimestampSeconds * 1000
                 ).toLocaleString()}
               />
-              <InfoRow label="Install Version" value={referrerData.installVersion} />
+              <InfoRow
+                label="Install Version"
+                value={referrerData.installVersion}
+              />
               <InfoRow
                 label="Google Play Instant"
                 value={String(referrerData.googlePlayInstantParam)}
