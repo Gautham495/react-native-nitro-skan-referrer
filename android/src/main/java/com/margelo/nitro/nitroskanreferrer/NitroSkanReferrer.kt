@@ -10,11 +10,9 @@ import com.margelo.nitro.NitroModules
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
-
 @DoNotStrip
 class NitroSkanReferrer : HybridNitroSkanReferrerSpec() {
 
-    // Get context from NitroModules instead of constructor injection
     private val appContext: Context
         get() = NitroModules.applicationContext 
             ?: throw IllegalStateException("Application context not available")
